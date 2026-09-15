@@ -1,0 +1,119 @@
+@model List<PawCareMVC.Models.Mascota>
+@{
+    ViewData["Title"] = "PawCare - Registro de mascotas";
+    var mascotaError = ViewBag.MascotaConError as PawCareMVC.Models.Mascota ?? new PawCareMVC.Models.Mascota();
+}
+
+<div class="container my-4">
+    <h2 class="mb-4">PawCare &mdash; Registro de mascotas</h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@err.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="row">
+
+
+        <div class="col-12 col-md-5 mb-4">
+            <div class="card">
+                <div class="card-header">Nueva mascota</div>
+                <div class="card-body">
+
+                    <form action="/Mascotas/Crear" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de la mascota</label>
+                            <input type="text" name="NombreMascota" value="@mascotaError.NombreMascota" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del dueño</label>
+                            <input type="text" name="NombreDueno" value="@mascotaError.NombreDueno" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select name="Tipo" class="form-select">
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Edad (años)</label>
+                            <input type="number" name="Edad" min="0" max="30" value="@mascotaError.Edad" class="form-control" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono (9 dígitos)</label>
+                            <input type="text" name="Telefono" value="@mascotaError.Telefono" class="form-control" maxlength="9" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones (opcional)</label>
+                            <textarea name="Observaciones" class="form-control" rows="2">@mascotaError.Observaciones</textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Registrar mascota</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12 col-md-7 mb-4">
+            <div class="card">
+                <div class="card-header">Mascotas registradas</div>
+                <div class="card-body table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Mascota</th>
+                                <th>Dueño</th>
+                                <th>Tipo</th>
+                                <th>Edad</th>
+                                <th>Teléfono</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model)
+                            {
+                                <tr>
+                                    <td>@m.Id</td>
+                                    <td>@m.NombreMascota</td>
+                                    <td>@m.NombreDueno</td>
+                                    <td>@m.Tipo</td>
+                                    <td>@m.Edad</td>
+                                    <td>@m.Telefono</td>
+                                    <td>@m.Observaciones</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
